@@ -155,8 +155,7 @@ Return valid JSON only:
     return NextResponse.json(parsed)
   } catch (err) {
     console.error('Generate section error:', err)
-    const msg = err instanceof Error ? err.message : String(err)
-    return NextResponse.json({ error: msg, anthropic_set: !!process.env.ANTHROPIC_API_KEY, openai_set: !!process.env.OPENAI_API_KEY }, { status: 500 })
+    return NextResponse.json({ error: 'Generation failed. Please try again.' }, { status: 500 })
   }
 }
 
