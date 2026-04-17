@@ -30,23 +30,26 @@ export async function POST(req: NextRequest) {
     // 1. Build semantic query for RAG retrieval
     const ragQuery = `${section_name} grant application ${funder_name} ${program_name || ''} organizational narrative`.trim()
 
-    // 2. Embed the query
-    const embeddingResponse = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: ragQuery,
-    })
-    const queryEmbedding = embeddingResponse.data[0].embedding
+    // 2. Embed the query (optional — gracefully skip if OPENAI_API_KEY not set)
+    let chunks: { document_id: string; content: string }[] | null = null
+    try {
+      const embeddingResponse = await openai.embeddings.create({
+        model: 'text-embedding-3-small',
+        input: ragQuery,
+      })
+      const queryEmbedding = embeddingResponse.data[0].embedding
 
-    // 3. Vector search for relevant chunks
-    const { data: chunks, error: searchError } = await supabase.rpc('kg_match_chunks', {
-      query_embedding: JSON.stringify(queryEmbedding),
-      match_org_id: org_id,
-      match_count: 15,
-      match_threshold: 0.25,
-    })
-
-    if (searchError) {
-      console.error('Vector search error:', searchError)
+      // 3. Vector search for relevant chunks
+      const { data: chunkData, error: searchError } = await supabase.rpc('kg_match_chunks', {
+        query_embedding: JSON.stringify(queryEmbedding),
+        match_org_id: org_id,
+        match_count: 15,
+        match_threshold: 0.25,
+      })
+      if (searchError) console.error('Vector search error:', searchError)
+      else chunks = chunkData
+    } catch (embErr) {
+      console.error('Embedding/RAG skipped (no OPENAI_API_KEY or RPC unavailable):', embErr instanceof Error ? embErr.message : embErr)
     }
 
     // 4. Get document names for context
