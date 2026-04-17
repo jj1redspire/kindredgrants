@@ -326,7 +326,7 @@ function Pricing() {
           </div>
           <p className="text-center mt-6 text-sm text-gray-500">
             Managing multiple organizations?{' '}
-            <a href="mailto:joel@helmport.com" className="text-green-800 hover:underline font-medium">
+            <a href="mailto:joel@ashwardgroup.com" className="text-green-800 hover:underline font-medium">
               Contact us for consultant pricing.
             </a>
           </p>
@@ -433,7 +433,7 @@ function Footer() {
         <div className="flex items-center gap-6 text-sm">
           <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
           <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-          <a href="mailto:joel@helmport.com" className="hover:text-white transition-colors">Contact</a>
+          <a href="mailto:joel@ashwardgroup.com" className="hover:text-white transition-colors">Contact</a>
         </div>
         <p className="text-xs text-gray-600">© 2026 KindredGrants. All rights reserved.</p>
       </div>
